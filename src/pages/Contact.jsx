@@ -1,6 +1,10 @@
 import { useState } from "react";
 import PageLayout from "../components/layout/PageLayout.jsx";
 import FAQ from "../components/FAQ.jsx";
+import image1 from '../assets/image1.jpg';
+import image2 from '../assets/image2.jpg';
+import image3 from '../assets/image3.jpg';
+import grocerImg from '../assets/grocer.png';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -85,17 +89,17 @@ const Contact = () => {
           {/* Image Gallery */}
           <div className="image-gallery">
             <div className="gallery-item">
-              <img src="image1.jpg" alt="Feature 1" className="gallery-image" />
+              <img src={image1} alt="Feature 1" className="gallery-image" />
               <h3>Smart Shopping</h3>
               <p>Organize your grocery list with ease</p>
             </div>
             <div className="gallery-item">
-              <img src="image2.jpg" alt="Feature 2" className="gallery-image" />
+              <img src={image2} alt="Feature 2" className="gallery-image" />
               <h3>Recipe Integration</h3>
               <p>Discover recipes based on your ingredients</p>
             </div>
             <div className="gallery-item">
-              <img src="image3.jpg" alt="Feature 3" className="gallery-image" />
+              <img src={image3} alt="Feature 3" className="gallery-image" />
               <h3>Easy Management</h3>
               <p>Track and manage your shopping efficiently</p>
             </div>

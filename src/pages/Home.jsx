@@ -3,6 +3,7 @@ import PageLayout from "../components/layout/PageLayout.jsx";
 import AddGroceryItemForm from "../components/grocery/AddGroceryItemForm.jsx";
 import '../styles/pages/home.css';
 import '../styles/components/buttons.css';
+import grocer from '../assets/grocer.png';
 
 const Home = ({ setCurrentPage }) => {
   return (
@@ -36,7 +37,7 @@ const Home = ({ setCurrentPage }) => {
             </div>
             <div className="hero-image">
               <img
-                src="grocer.png"
+                src={grocer}
                 alt="Colorful grocery items"
                 className="img-responsive"
               />
