@@ -62,14 +62,14 @@ const Home = ({ setCurrentPage }) => {
       <section className="cta">
         <div className="container">
           <div className="cta-content">
-          <h2 className="cta-title">
-            Ready to Simplify Your Grocery Shopping?
-          </h2>
-          <p className="cta-description">
-            Start managing your shopping list and discovering new recipes today.
-            No more forgotten items or wasted ingredients!
-          </p>
-          <div className="cta-buttons">
+            <h2 className="cta-title">
+              Ready to Simplify Your Grocery Shopping?
+            </h2>
+            <p className="cta-description">
+              Start managing your shopping list and discovering new recipes today.
+              No more forgotten items or wasted ingredients!
+            </p>
+            <div className="cta-buttons">
               <button 
                 className="btn btn-primary" 
                 onClick={() => setCurrentPage("list")}
