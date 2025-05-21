@@ -1,62 +1,63 @@
-import { useState } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useState } from 'react';
 
 const FAQ = () => {
-  const { isDarkMode } = useTheme();
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(null);
 
-  const faqData = [
+  const faqs = [
     {
-      question: "How does SmartCart work?",
-      answer: "SmartCart helps you manage your grocery shopping by creating and organizing shopping lists, suggesting recipes based on your ingredients, and helping you track your purchases."
+      question: "How do I add items to my grocery list?",
+      answer: "Simply click the 'Add Item' button and fill in the item details including name, category, and price."
     },
     {
-      question: "Is SmartCart free to use?",
-      answer: "Yes, SmartCart is completely free to use! We offer all basic features at no cost."
+      question: "Can I organize items by category?",
+      answer: "Yes! You can filter items by category using the filter dropdown in the grocery list."
     },
-   
     {
-      question: "How do I add items to my shopping list?",
-      answer: "You can add items through the quick add form on the home page or in the shopping list section. Just type the item name and select a category."
+      question: "How do I update item quantities?",
+      answer: "Click on any item in your list to edit its details, including quantity and price."
+    },
+    {
+      question: "Is my data saved automatically?",
+      answer: "Yes, all changes are automatically saved to your account."
     }
   ];
 
-  const toggleAccordion = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
+  const toggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="faq-section">
-      <h2>Frequently Asked Questions</h2>
+    <section className="faq-section">
+      <div className="faq-header">
+        <h2 className="faq-title">Frequently Asked Questions</h2>
+        <p className="faq-description">
+          Find answers to common questions about using our grocery list app
+        </p>
+      </div>
       <div className="faq-list">
-        {faqData.map((faq, index) => (
+        {faqs.map((faq, index) => (
           <div 
             key={index} 
-            className={`faq-item ${activeIndex === index ? 'active' : ''}`}
+            className={`faq-item ${openIndex === index ? 'active' : ''}`}
           >
-            <button 
+            <div
               className="faq-question"
-              onClick={() => toggleAccordion(index)}
-              aria-expanded={activeIndex === index}
-              aria-controls={`faq-answer-${index}`}
+              onClick={() => toggleFAQ(index)}
             >
-              {faq.question}
-              <span className="faq-icon" aria-hidden="true">
-                {activeIndex === index ? '−' : '+'}
-              </span>
-            </button>
-            <div 
-              id={`faq-answer-${index}`}
-              className="faq-answer"
-              role="region"
-              aria-labelledby={`faq-question-${index}`}
-            >
-              {faq.answer}
+              <h3>{faq.question}</h3>
+              <div className="faq-toggle">
+                {openIndex === index ? "−" : "+"}
+              </div>
+            </div>
+            <div className="faq-answer">
+              <div className="faq-answer-content">
+                {faq.answer}
+              </div>
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

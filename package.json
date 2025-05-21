@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://nishtha-09-gupta.github.io/smart-cart-app/",
+  "homepage": "https://nishtha-09-gupta.github.io/smart-cart-project/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
