@@ -3,6 +3,7 @@ import PageLayout from "../components/layout/PageLayout.jsx";
 import RecipeSearch from "../components/recipes/RecipeSearch.jsx";
 import RecipeCard from "../components/recipes/RecipeCard.jsx";
 import RecipeDetailModal from "../components/recipes/RecipeDetailModal.jsx";
+import './Recipes.css';
 
 const Recipes = ({ setCurrentPage }) => {
   const [recipes, setRecipes] = useState([]);
@@ -17,10 +18,12 @@ const Recipes = ({ setCurrentPage }) => {
     <PageLayout>
       <div className="container">
         <div className="recipes-container">
-          <h1 className="page-title">Find Recipes</h1>
-          <p className="page-subtitle">
-            Discover delicious recipes based on ingredients you have
-          </p>
+          <div className="recipes-header">
+            <h1 className="page-title">Find Recipes</h1>
+            <p className="page-subtitle">
+              Discover delicious recipes based on ingredients you have
+            </p>
+          </div>
 
           <RecipeSearch 
             onRecipesFound={handleRecipesFound}
@@ -28,8 +31,11 @@ const Recipes = ({ setCurrentPage }) => {
           />
 
           {loading ? (
-            <div className="loading">Loading recipes...</div>
-          ) : (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+              <p>Searching for recipes...</p>
+            </div>
+          ) : recipes.length > 0 ? (
             <div className="recipes-grid">
               {recipes.map((recipe) => (
                 <RecipeCard
@@ -38,6 +44,10 @@ const Recipes = ({ setCurrentPage }) => {
                   onClick={() => setSelectedRecipe(recipe)}
                 />
               ))}
+            </div>
+          ) : (
+            <div className="no-recipes">
+              <p>No recipes found. Try searching with different ingredients!</p>
             </div>
           )}
 
@@ -54,4 +64,4 @@ const Recipes = ({ setCurrentPage }) => {
   );
 };
 
-export default Recipes; 
+export default Recipes;
