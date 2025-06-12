@@ -27,7 +27,6 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       </nav>
       <div className="sidebar-footer">
         <button className="sidebar-item logout" onClick={logout}>
-          {/* <span className="sidebar-icon">🚪</span> */}
           <span className="sidebar-label">Logout</span>
         </button>
       </div>

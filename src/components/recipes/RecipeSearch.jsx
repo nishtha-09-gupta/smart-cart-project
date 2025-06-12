@@ -1,110 +1,167 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { searchRecipes } from '../../services/recipeService';
+import RecipeCard from './RecipeCard';
+import RecipeDetailModal from './RecipeDetailModal';
 import './RecipeSearch.css';
 
-const RecipeSearch = ({ onRecipesFound, setLoading }) => {
-  const [ingredients, setIngredients] = useState('');
-  const [error, setError] = useState('');
-  const [searchHistory, setSearchHistory] = useState([]);
+const RecipeSearch = () => {
+  const [query, setQuery] = useState('');
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [dietaryFilters, setDietaryFilters] = useState({
+    vegetarian: false,
+    vegan: false,
+    glutenFree: false,
+    dairyFree: false,
+    nutFree: false,
+    halal: false,
+    kosher: false
+  });
 
-  const handleSubmit = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    setError('');
-    
-    if (!ingredients.trim()) {
-      setError('Please enter at least one ingredient');
-      return;
-    }
+    if (!query.trim()) return;
 
     setLoading(true);
+    setError(null);
 
     try {
-      const apiKey = import.meta.env.VITE_SPOONACULAR_API_KEY;
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&number=12&apiKey=${apiKey}`
-      );
+      // Convert dietary filters to Spoonacular API parameters
+      const dietParams = Object.entries(dietaryFilters)
+        .filter(([_, isActive]) => isActive)
+        .map(([diet]) => diet.toLowerCase())
+        .join(',');
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch recipes');
-      }
-
-      const recipes = await response.json();
-      const detailedRecipes = await Promise.all(
-        recipes.map(async (recipe) => {
-          const detailResponse = await fetch(
-            `https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`
-          );
-          if (!detailResponse.ok) {
-            throw new Error('Failed to fetch recipe details');
-          }
-          return detailResponse.json();
-        })
-      );
-
-      // Transform the data to match our application's format
-      const formattedRecipes = detailedRecipes.map(recipe => ({
-        id: recipe.id,
-        name: recipe.title,
-        image: recipe.image,
-        readyInMinutes: recipe.readyInMinutes,
-        servings: recipe.servings,
-        ingredients: recipe.extendedIngredients.map(ing => ing.original),
-        instructions: recipe.instructions ? recipe.instructions.split('\n').filter(step => step.trim()) : ['No instructions available'],
-        summary: recipe.summary
-      }));
-
-      // Add to search history
-      setSearchHistory(prev => {
-        const newHistory = [ingredients, ...prev.filter(item => item !== ingredients)].slice(0, 5);
-        return newHistory;
-      });
-
-      onRecipesFound(formattedRecipes);
-    } catch (error) {
-      console.error('Error searching recipes:', error);
-      setError('Failed to fetch recipes. Please try again later.');
-      onRecipesFound([]);
+      const results = await searchRecipes(query, dietParams);
+      setRecipes(results);
+    } catch (err) {
+      setError('Failed to fetch recipes. Please try again.');
+      console.error('Search error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleHistoryClick = (historyItem) => {
-    setIngredients(historyItem);
+  const handleFilterChange = (e) => {
+    const { name, checked } = e.target;
+    setDietaryFilters(prev => ({
+      ...prev,
+      [name]: checked
+    }));
+  };
+
+  const handleRecipeClick = (recipe) => {
+    setSelectedRecipe(recipe);
+  };
+
+  const closeModal = () => {
+    setSelectedRecipe(null);
   };
 
   return (
-    <div className="recipe-search">
-      <form onSubmit={handleSubmit} className="search-form">
-        <div className="search-input-container">
-          <input
-            type="text"
-            value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)}
-            placeholder="Enter ingredients (e.g., chicken, rice, vegetables)"
-            className="search-input"
-          />
-          <button type="submit" className="search-button">
-            Search
-          </button>
-        </div>
-        {error && <div className="error-message">{error}</div>}
+    <div className="recipe-search-container">
+      <form onSubmit={handleSearch} className="search-form">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for recipes..."
+          className="search-input"
+        />
+        <button type="submit" className="search-button" disabled={loading}>
+          {loading ? 'Searching...' : 'Search'}
+        </button>
       </form>
 
-      {searchHistory.length > 0 && (
-        <div className="search-history">
-          <h4>Recent Searches:</h4>
-          <div className="history-tags">
-            {searchHistory.map((item, index) => (
-              <button
-                key={index}
-                className="history-tag"
-                onClick={() => handleHistoryClick(item)}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
+      <div className="dietary-filters">
+        <h3>Dietary Preferences</h3>
+        <div className="filters-grid">
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="vegetarian"
+              checked={dietaryFilters.vegetarian}
+              onChange={handleFilterChange}
+            />
+            <span>Vegetarian</span>
+          </label>
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="vegan"
+              checked={dietaryFilters.vegan}
+              onChange={handleFilterChange}
+            />
+            <span>Vegan</span>
+          </label>
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="glutenFree"
+              checked={dietaryFilters.glutenFree}
+              onChange={handleFilterChange}
+            />
+            <span>Gluten-Free</span>
+          </label>
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="dairyFree"
+              checked={dietaryFilters.dairyFree}
+              onChange={handleFilterChange}
+            />
+            <span>Dairy-Free</span>
+          </label>
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="nutFree"
+              checked={dietaryFilters.nutFree}
+              onChange={handleFilterChange}
+            />
+            <span>Nut-Free</span>
+          </label>
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="halal"
+              checked={dietaryFilters.halal}
+              onChange={handleFilterChange}
+            />
+            <span>Halal</span>
+          </label>
+          <label className="filter-item">
+            <input
+              type="checkbox"
+              name="kosher"
+              checked={dietaryFilters.kosher}
+              onChange={handleFilterChange}
+            />
+            <span>Kosher</span>
+          </label>
         </div>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <div className="recipes-grid">
+        {recipes.map((recipe) => (
+          <RecipeCard
+            key={recipe.id}
+            recipe={recipe}
+            onClick={() => handleRecipeClick(recipe)}
+          />
+        ))}
+      </div>
+
+      {selectedRecipe && (
+        <RecipeDetailModal
+          recipe={selectedRecipe}
+          isOpen={!!selectedRecipe}
+          onClose={closeModal}
+        />
       )}
     </div>
   );
