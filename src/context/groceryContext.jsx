@@ -40,7 +40,13 @@ export const GroceryProvider = ({ children }) => {
   const togglePurchased = (id) => {
     setGroceryItems(
       groceryItems.map((item) =>
-        item.id === id ? { ...item, isPurchased: !item.isPurchased } : item
+        item.id === id
+          ? {
+              ...item,
+              isPurchased: !item.isPurchased,
+              purchasedAt: !item.isPurchased ? Date.now() : undefined
+            }
+          : item
       )
     );
   };

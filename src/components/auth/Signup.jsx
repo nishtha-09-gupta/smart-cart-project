@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
+// import {auth} from './firebase';
+// import { onAuthStateChanged } from 'firebase/auth';
+
 
 const Signup = ({ setCurrentPage }) => {
   const [formData, setFormData] = useState({

@@ -46,6 +46,11 @@ const GroceryItemCard = ({ item }) => {
                 {item.notes}
               </p>
             )}
+            {item.isPurchased && item.purchasedAt && (
+              <p className="item-purchase-date">
+                Purchased on: {new Date(item.purchasedAt).toLocaleDateString()} {new Date(item.purchasedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
           </div>
         </div>
         

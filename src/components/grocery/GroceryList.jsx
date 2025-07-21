@@ -107,6 +107,20 @@ const GroceryList = () => {
         </div>
       ) : (
         <div className="items-list">
+          <div className="filter-controls">
+            <select value={filter} onChange={e => setFilter(e.target.value)}>
+              <option value="all">All</option>
+              <option value="purchased">Purchased</option>
+              {GROCERY_CATEGORIES.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+            <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
+              <option value="date">Sort by Date</option>
+              <option value="name">Sort by Name</option>
+              <option value="category">Sort by Category</option>
+            </select>
+          </div>
           {filteredItems.map((item) => (
             <GroceryItemCard key={item.id} item={item} />
           ))}
